@@ -10,13 +10,18 @@ void DynamicArray::createArray(int length)
     }
     else
     {
-        this->data = 0;
+        this->data = NULL;
+    }
+
+    for (int i = 0; i < length; ++i)
+    {
+        this->data[i] = 0;
     }
 }
 
 void DynamicArray::deleteArray()
 {
-    delete[] data;
+    delete data;
     length = 0;
 }
 
@@ -99,4 +104,22 @@ int DynamicArray::maxArray()
     }
 
     return max;
+}
+
+int DynamicArray::get(int i)
+{
+    if (data[i] != 0)
+        return data[i];
+    else
+        return 0;
+}
+
+int DynamicArray::getLength()
+{
+    return length;
+}
+
+void DynamicArray::readEl(int index, int el)
+{
+    data[index] = el;
 }

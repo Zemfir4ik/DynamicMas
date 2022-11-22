@@ -15,4 +15,7 @@ class DynamicArray
         void printArray();
         void sortArray(SORT_TYPE type);
         int maxArray();
+        int get(int i);
+        int getLength();
+        void readEl(int index, int el);
 };

@@ -1,4 +1,5 @@
 #include "array.h"
+#include <ncurses.h>
 
 void DynamicArray::createArray(int length)
 {
@@ -21,16 +22,16 @@ void DynamicArray::createArray(int length)
 
 void DynamicArray::deleteArray()
 {
-    delete data;
     length = 0;
+    delete data;
 }
 
 void DynamicArray::resizeArray(int newLength)
 {
-    if (newLength > this->length)
+    if (newLength > length)
     {
         int *newData = new int[newLength]; 
-        for (int i = 0; i < this->length; ++i)
+        for (int i = 0; i < length; ++i)
         {
             newData[i] = data[i];
         }

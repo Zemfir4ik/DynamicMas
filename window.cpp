@@ -9,12 +9,18 @@ void makeArrayFunc(int highlight, DynamicArray &array, WINDOW *w)
         case 0:
             mvwprintw(w, 1, 14, "Input lenght of array");
             mvwscanw(w, 2, 14, "%i", &length);
+            while (!isCorrectArrayLength(length))
+            {
+                clearWindow(w);
+                mvwprintw(w, 1, 14, "Incorrect size of array");
+                mvwscanw(w, 2, 14, "%i", &length);
+            }
             clearWindow(w);
             array.createArray(length);
             printNcurses(w, array, length);
             break;
         case 1:
-            if (array.get(0) != 0)
+            if (array.getLength() != 0)
             {
                 array.deleteArray();
                 mvwprintw(w, 1, 14, "Array has been deleted");
@@ -25,7 +31,7 @@ void makeArrayFunc(int highlight, DynamicArray &array, WINDOW *w)
             }
             break;
         case 2:
-            if (array.get(0) == 0)
+            if (array.getLength() == 0)
             {
                 mvwprintw(w, 1 , 14, "There is no array to resize");
                 break;
@@ -34,41 +40,80 @@ void makeArrayFunc(int highlight, DynamicArray &array, WINDOW *w)
             {
                 mvwprintw(w, 1, 14, "Input new lenght of array");
                 mvwscanw(w, 2, 14, "%i", &length);
+                while (!isCorrectArrayLength(length))
+                {
+                    clearWindow(w);
+                    mvwprintw(w, 1, 14, "Incorrect size of array");
+                    mvwscanw(w, 2, 14, "%i", &length);
+                }
+
                 clearWindow(w);
                 array.resizeArray(length);
                 printNcurses(w, array, length);
             }
             break;
         case 3:
-            for (int i = 0; i < length; ++i)
+            if (length > 0)
             {
-                mvwprintw(w, 1, 14, "Input %i element of array" , i);
-                mvwscanw(w, 2, 14, "%i", &el);
-                array.readEl(i, el);
-                clearWindow(w);
-            }
-            printNcurses(w, array, length);
-            break;
-        case 4:
-            printNcurses(w, array, length);
-            break;
-        case 5:
-            mvwprintw(w, 1, 14, "Input type of sort");
-            mvwprintw(w, 2, 14, "1 - to min");
-            mvwprintw(w, 3, 14, "2 - to max");
-            mvwscanw(w, 2, 14, "%i", &el);
-            if (el % 2 == 1)
-            {
-                array.sortArray(DynamicArray::SORT_MIN);
+                for (int i = 0; i < length; ++i)
+                {
+                    mvwprintw(w, 1, 14, "Input %i element of array" , i);
+                    mvwscanw(w, 2, 14, "%i", &el);
+                    array.readEl(i, el);
+                    clearWindow(w);
+                }
+                printNcurses(w, array, length);
             }
             else
             {
-                array.sortArray(DynamicArray::SORT_MAX);
+                clearWindow(w);
+                mvwprintw(w, 1, 14, "There is no array to read");
             }
             break;
+        case 4:
+        if (length > 0)
+            {
+                printNcurses(w, array, length);
+            }
+            else
+            {
+                clearWindow(w);
+                mvwprintw(w, 1, 14, "There is no array to print");
+            }
+            break;
+        case 5:
+            if (length > 0)
+            {
+                mvwprintw(w, 1, 14, "Input type of sort");
+                mvwprintw(w, 2, 14, "1 - to min");
+                mvwprintw(w, 3, 14, "2 - to max");
+                mvwscanw(w, 2, 14, "%i", &el);
+                if (el % 2 == 1)
+                {
+                    array.sortArray(DynamicArray::SORT_MIN);
+                }
+                else
+                {
+                    array.sortArray(DynamicArray::SORT_MAX);
+                }
+            }
+            else
+            {
+                clearWindow(w);
+                mvwprintw(w, 1, 14, "There is no array to sort");
+            }           
+            break;
         case 6:
-            int max = array.maxArray();
-            mvwprintw(w, 1, 14, "%i is the bigest number", max);
+            if (length > 0)
+            {
+                int max = array.maxArray();
+                mvwprintw(w, 1, 14, "%i is the bigest number", max);
+            }
+            else
+            {
+                clearWindow(w);
+                mvwprintw(w, 1, 14, "There is no array");
+            }                       
             break;
     }
 }
@@ -86,15 +131,21 @@ void clearWindow(WINDOW *w)
 
 void printNcurses(WINDOW *w, DynamicArray array, int length)
 {
+    int k = 1;
     for (int i = 0; i < length; ++i)
     {
-        mvwprintw(w, 1, 14 + i, "%i", array.get(i));
+        if (i % 10 == 0)
+        {
+            wmove(w, k, 14);
+            k += 1;
+        }
+        wprintw(w, "%i ", array.get(i));
     }
 }
 
 void startTest()
 {
-        int xMax, yMax;
+    int xMax, yMax;
     getmaxyx(stdscr, yMax, xMax);
 
     WINDOW *funcWin = newwin(yMax / 5, xMax / 4, 0, 0);
@@ -103,6 +154,8 @@ void startTest()
     
     int highlight = 0;
     int choice;
+
+    DynamicArray array;
 
     while (1)
     {
@@ -149,10 +202,16 @@ void startTest()
             }
             else
             {
-                DynamicArray array;
                 clearWindow(funcWin);
                 makeArrayFunc(highlight, array, funcWin);
             }
         }
     }
+}
+
+bool isCorrectArrayLength(int a)
+{
+    if (a < 0)
+        return false;
+    return true;
 }

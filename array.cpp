@@ -22,8 +22,8 @@ void DynamicArray::createArray(int length)
 
 void DynamicArray::deleteArray()
 {
-    length = 0;
     delete data;
+    length = 0;
 }
 
 void DynamicArray::resizeArray(int newLength)
@@ -109,10 +109,7 @@ int DynamicArray::maxArray()
 
 int DynamicArray::get(int i)
 {
-    if (data[i] != 0)
-        return data[i];
-    else
-        return 0;
+    return data[i];
 }
 
 int DynamicArray::getLength()
